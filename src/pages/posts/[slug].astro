@@ -1,0 +1,77 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog');
+	return posts.map((post: CollectionEntry<'blog'>) => ({
+		params: { slug: post.id },
+		props: post,
+	}));
+}
+type Props = CollectionEntry<'blog'>;
+
+const post = Astro.props;
+const { Content } = await render(post);
+
+const formattedDate = new Date(post.data.pubDate).toLocaleDateString('zh-CN', {
+	year: 'numeric',
+	month: 'long',
+	day: 'numeric'
+});
+---
+
+<Layout title={`${post.data.title} - Yama Blog`}>
+	<Header client:load pathname="/posts" />
+	
+	<main class="pt-32 pb-20 px-6 max-w-4xl mx-auto">
+		{/* 文章卡片容器 */}
+		<article class="bg-white dark:bg-zinc-900/40 rounded-[2.5rem] border border-zinc-200/50 dark:border-zinc-800/50 shadow-2xl shadow-blue-500/5 overflow-hidden">
+			{/* 头图区域 */}
+			{post.data.heroImage && (
+				<div class="aspect-video w-full overflow-hidden border-b border-zinc-100 dark:border-zinc-800/50">
+					<img 
+						src={post.data.heroImage} 
+						alt={post.data.title} 
+						class="w-full h-full object-cover transition-transform duration-1000 origin-center hover:scale-105"
+					/>
+				</div>
+			)}
+
+			<div class="p-8 md:p-12 lg:p-16">
+				<header class="mb-12">
+					<div class="flex items-center gap-2 text-sm text-zinc-400 mb-6">
+						<time datetime={post.data.pubDate.toISOString()}>{formattedDate}</time>
+						<span class="w-1 h-1 bg-zinc-300 dark:bg-zinc-700 rounded-full" />
+						<span class="text-blue-600 font-medium">文章详情</span>
+					</div>
+					<h1 class="text-3xl md:text-5xl font-extrabold text-zinc-900 dark:text-zinc-100 leading-tight tracking-tight mb-6">
+						{post.data.title}
+					</h1>
+					<p class="text-xl text-zinc-500 dark:text-zinc-400 leading-relaxed italic border-l-4 border-blue-500/30 pl-6 py-2">
+						{post.data.description}
+					</p>
+				</header>
+
+				{/* Markdown 内容主体 */}
+				<div class="prose prose-zinc dark:prose-invert max-w-none prose-lg 
+					prose-headings:font-bold prose-headings:tracking-tight 
+					prose-a:text-blue-600 prose-img:rounded-3xl prose-img:border prose-img:border-zinc-200 dark:prose-img:border-zinc-800">
+					<Content />
+				</div>
+				
+				<footer class="mt-20 pt-12 border-t border-zinc-100 dark:border-zinc-800">
+					<div class="flex flex-col md:flex-row justify-between items-center gap-6">
+						<div class="text-zinc-500 text-sm">
+							本文发布于 {formattedDate}，由 Yama Blog 整理。
+						</div>
+						<a href="/posts" class="px-6 py-3 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-full font-bold hover:scale-105 transition-transform">
+							返回列表
+						</a>
+					</div>
+				</footer>
+			</div>
+		</article>
+	</main>
+</Layout>

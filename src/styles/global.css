@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+/* Tailwind V4: 显式定义暗黑模式变体（基于 .dark 类） */
+@variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  /* 全局过渡效果：确保在切换主题时背景、文字和边框均有平滑动效 */
+  html, body {
+    @apply transition-[background-color,color,border-color,box-shadow] duration-700 ease-in-out;
+  }
+
+  /* 针对所有元素的基础颜色过渡 */
+  *, ::before, ::after {
+    @apply border-gray-200 dark:border-gray-800 transition-colors duration-500;
+  }
+}
+
+/* 移除之前冗余或冲突的样式，确保以 Layout.astro 定义的类为准 */
+.dark body {
+  @apply bg-gray-950 text-gray-100;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+}

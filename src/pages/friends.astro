@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header';
+import EmptyState from '../components/EmptyState';
+---
+
+<Layout title="友链 - Yama Blog">
+	<Header client:load pathname={Astro.url.pathname} />
+	
+	<main class="pt-32 pb-20 px-6 max-w-4xl mx-auto">
+		<article class="bg-white dark:bg-zinc-900/40 rounded-[2.5rem] border border-zinc-200/50 dark:border-zinc-800/50 shadow-2xl p-8 md:p-12 lg:p-16">
+			<header class="mb-12 text-center">
+				<h1 class="text-4xl font-bold text-zinc-900 dark:text-zinc-100 mb-6 tracking-tight">友情链接</h1>
+				<p class="text-zinc-500 dark:text-zinc-400 text-lg">那些一直在路上的优秀伙伴们。</p>
+			</header>
+			
+			<EmptyState 
+				client:load 
+				title="友联功能正在打磨中" 
+				message="我们正在建立一个全新的社交网络，很快您就可以在这里看到所有的合作伙伴了！" 
+			/>
+		</article>
+	</main>
+</Layout>

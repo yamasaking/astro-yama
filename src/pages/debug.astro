@@ -1,0 +1,8 @@
+---
+import { getCollection } from 'astro:content';
+const posts = await getCollection('blog');
+---
+<div>Count: {posts.length}</div>
+<ul>
+  {posts.map(p => <li>{p.id} - {p.data.title}</li>)}
+</ul>

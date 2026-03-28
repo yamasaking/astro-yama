@@ -1,0 +1,46 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header';
+import PostCard from '../components/PostCard';
+
+const allPosts = await getCollection('blog');
+console.log('Post Count:', allPosts.length);
+const sortedPosts = allPosts.sort(
+	(a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<Layout title="文章列表 - Yama Blog">
+	<Header client:load pathname={Astro.url.pathname} />
+	
+	<main class="pt-32 pb-20 max-w-5xl mx-auto px-6">
+		<header class="mb-16 text-center">
+			<h1 class="text-4xl md:text-5xl font-extrabold text-zinc-900 dark:text-zinc-100 mb-6 tracking-tight">
+				探索与思考
+			</h1>
+			<p class="text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed text-lg">
+				记录技术点滴，分享生活灵感。在这里，每一个文字都是一段旅程。
+			</p>
+		</header>
+		
+		<div class="flex flex-col gap-8 max-w-4xl mx-auto">
+			{sortedPosts.map((post: CollectionEntry<'blog'>) => (
+				<PostCard 
+					client:load
+					title={post.data.title}
+					description={post.data.description}
+					pubDate={post.data.pubDate}
+					heroImage={post.data.heroImage}
+					url={`/posts/${post.id}`}
+				/>
+			))}
+		</div>
+
+		{sortedPosts.length === 0 && (
+			<div class="text-center py-20">
+				<p class="text-zinc-500">暂时还没有发布任何文章，请稍后再来。</p>
+			</div>
+		)}
+	</main>
+</Layout>

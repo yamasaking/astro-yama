@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header';
+import BentoGrid from '../components/BentoGrid';
+
+const allPosts = await getCollection('blog');
+const latestPosts = allPosts
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+---
+
+<Layout title="Yama Blog - 极客面板">
+	<div class="h-[100dvh] flex flex-col overflow-hidden bg-white dark:bg-zinc-950 transition-colors duration-500">
+		<Header client:load pathname={Astro.url.pathname} />
+		
+		<main class="flex-1 flex flex-col items-center justify-start p-4 md:p-8 pt-[140px] md:pt-[180px] overflow-y-auto md:overflow-hidden relative">
+			{/* 背景装饰光晕 */}
+			<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-[500px] bg-blue-500/10 blur-[150px] rounded-full -z-10 pointer-events-none" />
+			
+			<div class="w-full max-w-6xl relative">
+				<BentoGrid client:load latestPosts={latestPosts} />
+			</div>
+			
+			{/* 极简底部版块 */}
+			<footer class="mt-auto py-6 text-center text-[10px] font-mono text-zinc-400 dark:text-zinc-600 tracking-widest uppercase pointer-events-none">
+				© 2026 YAMA · BUILT WITH ASTRO · DESIGNED FOR GEEKS
+			</footer>
+		</main>
+	</div>
+</Layout>
+
+<style>
+	/* 防止在一些浏览器上出现不必要的滚动条 */
+	:global(body) {
+		overflow: hidden;
+	}
+	
+	@media (max-width: 768px) {
+		:global(body) {
+			overflow: auto;
+		}
+		.h-\[100dvh\] {
+			height: auto;
+			min-height: 100vh;
+		}
+	}
+</style>
