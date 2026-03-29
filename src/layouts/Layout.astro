@@ -1,6 +1,8 @@
 ---
 import '../styles/global.css';
 
+import { ClientRouter } from 'astro:transitions';
+
 interface Props {
 	title: string;
 	description?: string;
@@ -18,6 +20,7 @@ const { title, description = "Astro + React blog site" } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<ClientRouter />
 
 		{/* 极简行内脚本，防止主题闪烁 (FOUC) */}
 		<script is:inline>

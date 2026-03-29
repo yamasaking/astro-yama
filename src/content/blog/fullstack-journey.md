@@ -2,7 +2,7 @@
 title: "全栈开发之旅：连接前端与后端的桥梁"
 description: "从像素到数据库，全栈开发不仅是技能的堆叠，更是一种全局思考的视角。"
 pubDate: "2024-03-05"
-heroImage: "/images/blog/fullstack-journey.png"
+heroImage: "https://api.noome.cn/acgurl/index.php"
 ---
 
 # 全栈开发之路

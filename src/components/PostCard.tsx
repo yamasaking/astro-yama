@@ -1,6 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Skeleton from './Skeleton';
+import { motion } from 'framer-motion';
+import HeroImage from './HeroImage';
 
 interface PostCardProps {
   title: string;
@@ -8,18 +7,10 @@ interface PostCardProps {
   pubDate: Date;
   heroImage?: string;
   url: string;
+  id: string;
 }
 
-export default function PostCard({ title, description, pubDate, heroImage, url }: PostCardProps) {
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const imgRef = useRef<HTMLImageElement>(null);
-  
-  useEffect(() => {
-    if (imgRef.current?.complete) {
-      setImageLoaded(true);
-    }
-  }, []);
-
+export default function PostCard({ title, description, pubDate, heroImage, url, id }: PostCardProps) {
   const formattedDate = new Date(pubDate).toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
@@ -31,35 +22,15 @@ export default function PostCard({ title, description, pubDate, heroImage, url }
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="group flex flex-col md:flex-row gap-6 p-6 bg-zinc-50 dark:bg-zinc-900/40 rounded-[2rem] border border-zinc-200/50 dark:border-zinc-800/50 hover:bg-white dark:hover:bg-zinc-900 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/5 hover:-translate-y-1"
+      className="group flex flex-col md:flex-row gap-6 p-6 bg-zinc-50 dark:bg-zinc-900/40 rounded-4xl border border-zinc-200/50 dark:border-zinc-800/50 hover:bg-white dark:hover:bg-zinc-900 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/5 hover:-translate-y-1"
     >
       {/* 图片区域 */}
-      <div className="md:w-64 h-44 shrink-0 relative overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-800">
-        <AnimatePresence>
-          {!imageLoaded && (
-            <motion.div 
-              key="skeleton"
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 z-10"
-            >
-              <Skeleton className="w-full h-full" />
-            </motion.div>
-          )}
-        </AnimatePresence>
-        
-        {heroImage && (
-          <img
-            ref={imgRef}
-            src={heroImage}
-            alt={title}
-            loading="lazy"
-            onLoad={() => setImageLoaded(true)}
-            className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${
-              imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
-            }`}
-          />
-        )}
-      </div>
+      <HeroImage 
+        heroImage={heroImage}
+        title={title}
+        postId={id}
+        className="md:w-64 h-44 shrink-0 rounded-2xl group-hover:scale-110 transition-transform! duration-700!"
+      />
 
       {/* 内容区域 */}
       <div className="flex flex-col flex-1 justify-center py-2">

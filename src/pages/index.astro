@@ -6,12 +6,12 @@ import BentoGrid from '../components/BentoGrid';
 
 const allPosts = await getCollection('blog');
 const latestPosts = allPosts
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf() || b.id.localeCompare(a.id))
   .slice(0, 3);
 ---
 
 <Layout title="Yama Blog - 极客面板">
-	<div class="h-[100dvh] flex flex-col overflow-hidden bg-white dark:bg-zinc-950 transition-colors duration-500">
+	<div class="h-dvh flex flex-col overflow-hidden bg-white dark:bg-zinc-950 transition-colors duration-500">
 		<Header client:load pathname={Astro.url.pathname} />
 		
 		<main class="flex-1 flex flex-col items-center justify-start p-4 md:p-8 pt-[140px] md:pt-[180px] overflow-y-auto md:overflow-hidden relative">

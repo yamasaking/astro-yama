@@ -2,7 +2,7 @@
 title: "现代化 UI 交互：玻璃拟态与微动效"
 description: "如何利用视觉深度与细腻的动画提升用户的情绪价值，打造让用户惊叹的交互体验。"
 pubDate: "2024-03-15"
-heroImage: "/images/blog/ui-interaction.png"
+heroImage: "https://api.noome.cn/acgurl/index.php"
 ---
 
 # 现代化 UI 交互指南

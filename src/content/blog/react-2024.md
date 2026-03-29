@@ -2,7 +2,7 @@
 title: "React 2024：生态演进与未来趋势"
 description: "从 React Server Components 到未来可能出现的编译器，React 的生态地位依然稳固且在不断进化。"
 pubDate: "2024-03-20"
-heroImage: "/images/blog/react-2024.png"
+heroImage: "https://api.noome.cn/acgurl/index.php"
 ---
 
 # React 2024 生态观察

@@ -2,7 +2,7 @@
 title: "探索 Astro V6：前端开发的新篇章"
 description: "Astro 的最新大版本带来了令人惊叹的性能优化与新特性，特别是其孤岛架构的进一步演进。"
 pubDate: "2024-03-28"
-heroImage: "/images/blog/astro-v6.png"
+heroImage: "https://api.noome.cn/acgurl/index.php"
 ---
 
 # 探索 Astro V6

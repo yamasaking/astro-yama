@@ -2,7 +2,7 @@
 title: "极简主义编程：追求极致的代码质量"
 description: "少即是多。在日趋复杂的现代开发中，如何通过极简主义哲学保持代码的纯粹与可读。"
 pubDate: "2024-03-10"
-heroImage: "/images/blog/minimalist-code.png"
+heroImage: "https://api.noome.cn/acgurl/index.php"
 ---
 
 # 极简主义编程哲学
