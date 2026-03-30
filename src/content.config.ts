@@ -3,8 +3,8 @@ import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 
 const blog = defineCollection({
-	// Using the new glob loader for local markdown files
-	loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: "./src/content/blog" }),
+	// Using the new glob loader for local markdown files from the project root
+	loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: "./blog" }),
 	schema: z.object({
 		title: z.string(),
 		description: z.string(),

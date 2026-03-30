@@ -9,7 +9,19 @@ export function toggleMenu() {
 
 // 主题管理
 export type Theme = 'light' | 'dark';
-export const theme = atom<Theme>('light');
+
+// 从本地或系统默认读取初始值
+const getInitialTheme = (): Theme => {
+  if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+    return localStorage.getItem('theme') as Theme;
+  }
+  if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    return 'dark';
+  }
+  return 'light';
+};
+
+export const theme = atom<Theme>(getInitialTheme());
 export const isDark = computed(theme, (value) => value === 'dark');
 
 export function setTheme(newTheme: Theme) {
@@ -17,10 +29,12 @@ export function setTheme(newTheme: Theme) {
   if (typeof localStorage !== 'undefined') {
     localStorage.setItem('theme', newTheme);
   }
-  if (newTheme === 'dark') {
-    document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
+  if (typeof document !== 'undefined') {
+    if (newTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
   }
 }
 

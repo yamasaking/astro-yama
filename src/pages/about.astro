@@ -1,24 +1,15 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header';
-import EmptyState from '../components/EmptyState';
+import AboutProfile from '../components/AboutProfile';
 ---
 
 <Layout title="关于 - Yama Blog">
 	<Header client:load pathname={Astro.url.pathname} />
 	
-	<main class="pt-32 pb-20 px-6 max-w-4xl mx-auto">
+	<main class="pt-32 pb-20 px-6 max-w-4xl mx-auto text-zinc-900 dark:text-zinc-100">
 		<article class="bg-white dark:bg-zinc-900/40 rounded-[2.5rem] border border-zinc-200/50 dark:border-zinc-800/50 shadow-2xl p-8 md:p-12 lg:p-16">
-			<header class="mb-12 text-center">
-				<h1 class="text-4xl font-bold text-zinc-900 dark:text-zinc-100 mb-6 tracking-tight">关于我</h1>
-				<p class="text-zinc-500 dark:text-zinc-400 text-lg">代码、设计与对技术的无限热爱。</p>
-			</header>
-			
-			<EmptyState 
-				client:load 
-				title="个人简介完善中" 
-				message="博主正在梳理过往的技术栈与成长故事，很快就会带给大家一个完整的自我介绍！" 
-			/>
+			<AboutProfile client:load />
 		</article>
 	</main>
 </Layout>

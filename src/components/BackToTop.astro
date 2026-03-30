@@ -1,0 +1,137 @@
+---
+// BackToTop.astro
+---
+
+<div id="back-to-top" class="fixed right-6 bottom-6 z-50 transition-all duration-300 opacity-0 pointer-events-none cursor-pointer select-none">
+  <div class="relative group">
+    <!-- 提示气泡 -->
+    <div class="absolute -top-12 left-1/2 -translate-x-1/2 bg-zinc-900/90 text-white text-xs py-1.5 px-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-2xl backdrop-blur-sm border border-zinc-700/50">
+      回到顶部喵~
+    </div>
+    
+    <!-- 100% 真透明 高质量像素 SVG 容器 -->
+    <div id="cat-container" class="w-24 h-24 drop-shadow-2xl transition-all duration-200 group-hover:scale-110">
+      
+      <!-- 精细像素侧趴猫 (默认) -->
+      <svg id="svg-rest" viewBox="0 0 16 16" class="w-full h-full fill-zinc-900 dark:fill-zinc-100" shape-rendering="crispEdges">
+        <!-- 耳朵 -->
+        <rect x="2" y="3" width="1" height="2" />
+        <rect x="7" y="3" width="1" height="2" />
+        <!-- 头部 -->
+        <rect x="2" y="5" width="7" height="5" />
+        <!-- 眼睛 (镂空或高亮覆盖) -->
+        <rect x="3" y="7" width="1" height="1" fill="#FFF" class="dark:fill-zinc-950" />
+        <rect x="6" y="7" width="1" height="1" fill="#FFF" class="dark:fill-zinc-950" />
+        <!-- 身体 -->
+        <rect x="4" y="10" width="10" height="4" />
+        <!-- 尾巴 (卷曲) -->
+        <rect x="14" y="8" width="1" height="4" />
+        <rect x="13" y="8" width="1" height="1" />
+        <!-- 腿部 -->
+        <rect x="5" y="14" width="2" height="1" />
+        <rect x="11" y="14" width="2" height="1" />
+      </svg>
+
+      <!-- 垂直攀爬猫 (点击时) -->
+      <svg id="svg-run" viewBox="0 0 16 16" class="w-full h-full fill-zinc-900 dark:fill-zinc-100 hidden" shape-rendering="crispEdges">
+        <!-- 耳朵 (竖立向上) -->
+        <rect x="6" y="0" width="1" height="2" />
+        <rect x="9" y="0" width="1" height="2" />
+        <!-- 头部 -->
+        <rect x="6" y="2" width="4" height="4" />
+        <!-- 躯干 -->
+        <rect x="5" y="6" width="6" height="8" />
+        <!-- 前爪 (张开) -->
+        <rect x="3" y="6" width="2" height="2" />
+        <rect x="11" y="6" width="2" height="2" />
+        <!-- 后爪 (张开) -->
+        <rect x="3" y="12" width="2" height="2" />
+        <rect x="11" y="12" width="2" height="2" />
+        <!-- 尾巴 (在下方) -->
+        <rect x="7" y="14" width="2" height="2" />
+      </svg>
+      
+    </div>
+  </div>
+</div>
+
+<style>
+  #back-to-top.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* 向边缘靠拢 */
+  #back-to-top.climbing {
+    right: 0 !important;
+  }
+
+  /* 垂直冲刺动画 */
+  @keyframes cat-sprint-up {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-130vh); }
+  }
+
+  /* 攀爬时的微小左右偏移 */
+  @keyframes cat-climb-sway {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(3px); }
+  }
+
+  .running {
+    animation: cat-sprint-up 1.2s ease-in forwards !important;
+  }
+
+  .running #cat-container {
+    animation: cat-climb-sway 0.15s infinite;
+  }
+
+  .hidden {
+    display: none;
+  }
+</style>
+
+<script>
+  function initBackToTop() {
+    const backToTop = document.getElementById('back-to-top');
+    const svgRest = document.getElementById('svg-rest');
+    const svgRun = document.getElementById('svg-run');
+
+    if (!backToTop || !svgRest || !svgRun) return;
+
+    window.addEventListener('scroll', () => {
+      if (backToTop.classList.contains('running')) return;
+      if (window.scrollY > 400) {
+        backToTop.classList.add('show');
+      } else {
+        backToTop.classList.remove('show');
+      }
+    });
+
+    backToTop.addEventListener('click', () => {
+      if (backToTop.classList.contains('running')) return;
+
+      // 切换到攀爬姿态
+      svgRest.classList.add('hidden');
+      svgRun.classList.remove('hidden');
+      
+      // 贴向滚动条边缘
+      backToTop.classList.add('climbing');
+
+      // 触发冲刺
+      setTimeout(() => {
+        backToTop.classList.add('running');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
+
+      // 完成后重置
+      setTimeout(() => {
+        backToTop.classList.remove('running', 'show', 'climbing');
+        svgRest.classList.remove('hidden');
+        svgRun.classList.add('hidden');
+      }, 1500);
+    });
+  }
+
+  document.addEventListener('astro:page-load', initBackToTop);
+</script>

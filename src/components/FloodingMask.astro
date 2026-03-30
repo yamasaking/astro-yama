@@ -1,0 +1,185 @@
+---
+// FloodingMask.astro
+---
+
+<div id="flooding-mask" class="fixed inset-0 z-100 flex items-center justify-center cursor-pointer select-none overflow-hidden bg-white/10 backdrop-blur-[2px]">
+  <!-- 极致防闪现提示（渲染到 HTML 即运行） -->
+  <script is:inline>
+    // 在全页刷新之前，此变量不会存在；但在 ClientRouter 路由跳转中，window 对象保持不变
+    if (window.__HAS_ENTERED_SITE__) {
+      const mask = document.getElementById('flooding-mask');
+      if (mask) {
+        mask.style.display = 'none';
+        mask.remove();
+      }
+    }
+  </script>
+
+  <!-- 水淹层 (多层叠加) -->
+  <div class="water-layer layer-1 bg-blue-600/80"></div>
+  <div class="water-layer layer-2 bg-cyan-500/60"></div>
+  <div class="water-layer layer-3 bg-indigo-700/40"></div>
+
+  <!-- 气泡容器 -->
+  <div id="bubble-container" class="absolute inset-0 pointer-events-none"></div>
+
+  <!-- 中心涟漪引导动效 -->
+  <div id="ripple-guide" class="relative z-10 flex items-center justify-center opacity-0 transition-opacity duration-1000">
+    <div class="ripple"></div>
+    <div class="ripple ripple-2"></div>
+    <div class="ripple ripple-3"></div>
+  </div>
+</div>
+
+<style>
+  /* 核心涟漪动效 */
+  .ripple {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border: 3px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    animation: ripple-spread 3s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .ripple-2 { animation-delay: 1s; }
+  .ripple-3 { animation-delay: 2s; }
+
+  @keyframes ripple-spread {
+    0% { transform: scale(0.5); opacity: 0; border-width: 8px; }
+    20% { opacity: 0.6; }
+    100% { transform: scale(5); opacity: 0; border-width: 1px; }
+  }
+
+  #flooding-mask {
+    transition: transform 1.2s cubic-bezier(0.7, 0, 0.3, 1);
+  }
+
+  /* 褪去动画：从上往下 */
+  #flooding-mask.receding {
+    transform: translateY(100%);
+  }
+
+  .water-layer {
+    position: absolute;
+    bottom: -20%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    border-radius: 40%;
+    animation: wave 12s infinite linear;
+    transform-origin: 50% 48%;
+  }
+
+  .layer-1 { animation-duration: 8s; opacity: 0.8; }
+  .layer-2 { animation-duration: 12s; opacity: 0.6; border-radius: 43%; }
+  .layer-3 { animation-duration: 15s; opacity: 0.4; border-radius: 38%; }
+
+  @keyframes wave {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  :global(.bubble) {
+    position: absolute;
+    bottom: -20px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.8);
+    animation: rise var(--duration) linear infinite;
+    left: var(--left);
+    width: var(--size);
+    height: var(--size);
+  }
+
+  @keyframes rise {
+    0% { transform: translateY(0) translateX(0); opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.4; }
+    100% { transform: translateY(-110vh) translateX(var(--drift)); opacity: 0; }
+  }
+</style>
+
+<script>
+  function initFloodingMask() {
+    const mask = document.getElementById('flooding-mask') as HTMLElement;
+    
+    // 如果没有找到元素，直接返回
+    if (!mask) return;
+
+    // 核心修复：如果检测到已进入，立即移除残留 DOM。
+    if ((window as any).__HAS_ENTERED_SITE__) {
+      mask.remove();
+      return;
+    }
+
+    const bubbleContainer = document.getElementById('bubble-container');
+    
+    if (!bubbleContainer) return;
+
+    // 1. 生成气泡
+    function createBubbles(count: number) {
+      for (let i = 0; i < count; i++) {
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        
+        const size = Math.random() * 20 + 5 + 'px';
+        const left = Math.random() * 100 + '%';
+        const duration = Math.random() * 4 + 4 + 's';
+        const delay = Math.random() * 5 + 's';
+        const drift = (Math.random() - 0.5) * 100 + 'px';
+
+        bubble.style.setProperty('--size', size);
+        bubble.style.setProperty('--left', left);
+        bubble.style.setProperty('--duration', duration);
+        bubble.style.setProperty('--drift', drift);
+        bubble.style.animationDelay = delay;
+
+        bubbleContainer!.appendChild(bubble);
+      }
+    }
+
+    createBubbles(30);
+
+    // 2. 交互就绪提示
+    const showStatus = () => {
+      // 核心修复：遮罩出现时禁用滚动
+      document.documentElement.classList.add('overflow-hidden');
+      document.body.classList.add('overflow-hidden');
+
+      setTimeout(() => {
+        const guide = document.getElementById('ripple-guide');
+        if (guide) guide.classList.replace('opacity-0', 'opacity-100');
+      }, 500);
+    };
+
+    if (document.readyState === 'complete') {
+      showStatus();
+    } else {
+      window.addEventListener('load', showStatus);
+    }
+
+    // 3. 点击褪去逻辑
+    mask.addEventListener('click', () => {
+      // 标记站点已进入
+      (window as any).__HAS_ENTERED_SITE__ = true;
+      
+      mask.classList.add('receding');
+      
+      setTimeout(() => {
+        mask.remove(); // 物理删除
+        // 恢复滚动
+        document.documentElement.classList.remove('overflow-hidden');
+        document.body.classList.remove('overflow-hidden');
+      }, 1200);
+    });
+  }
+
+  // 监听导航和页面加载
+  document.addEventListener('astro:page-load', initFloodingMask);
+</script>
+
+<script is:inline>
+  window.__HAS_ENTERED_SITE__ = window.__HAS_ENTERED_SITE__ || false;
+</script>

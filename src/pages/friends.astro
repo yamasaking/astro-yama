@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header';
-import EmptyState from '../components/EmptyState';
+import FriendOrbit from '../components/FriendOrbit';
 ---
 
 <Layout title="友链 - Yama Blog">
@@ -14,11 +14,9 @@ import EmptyState from '../components/EmptyState';
 				<p class="text-zinc-500 dark:text-zinc-400 text-lg">那些一直在路上的优秀伙伴们。</p>
 			</header>
 			
-			<EmptyState 
-				client:load 
-				title="友联功能正在打磨中" 
-				message="我们正在建立一个全新的社交网络，很快您就可以在这里看到所有的合作伙伴了！" 
-			/>
+			<div class="min-h-[500px] flex items-center justify-center">
+				<FriendOrbit client:load />
+			</div>
 		</article>
 	</main>
 </Layout>

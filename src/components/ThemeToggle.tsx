@@ -7,11 +7,14 @@ import { useEffect } from 'react';
 export default function ThemeToggle() {
   const $theme = useStore(theme);
 
-  // 初始化时从本地或 DOM 中读取状态
+  // 确保在 ClientRouter 下组件重新挂载时，DOM 类名依然正确（作为兜底）
   useEffect(() => {
-    const isDark = document.documentElement.classList.contains('dark');
-    setTheme(isDark ? 'dark' : 'light');
-  }, []);
+    if ($theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [$theme]);
 
   return (
     <motion.button
